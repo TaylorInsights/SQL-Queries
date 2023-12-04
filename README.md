@@ -1,12 +1,14 @@
 # SQL-Queries
-### Question 1: How many orders were shipped after the due (required) date?
+## Question 1: How many orders were shipped after the due (required) date?
+### I chose the COUNT function to count the occurences of 'order_id' where the shipped_date is greater than the 'required_date' in the 'orders' table. The result will be under ALIAS 'shipped_after_due'.
 ```sql 
-SELECT COUNT(order_id) AS Shipped_After_Due
+SELECT COUNT(order_id) AS shipped_after_due
 FROM orders
 WHERE shipped_date > required_date;
 ```
 
-### Question 2: Name all customers who live in New York and provided a phone number.
+## Question 2: Name all customers who live in New York and provided a phone number.
+### I used the WHERE clause to filter the results to only included NY as the state and WHERE the phone number IS NOT NULL or empty.
 ```sql 
 SELECT first_name
 , last_name
@@ -17,7 +19,8 @@ WHERE state = 'NY'
 AND phone IS NOT NULL;
 ```
 
-### Question 3: List all staff member names (no duplicates) who had a discount greater than 5% (0.05)
+## Question 3: List all staff member names (no duplicates) who had a discount greater than 5% (0.05)
+### I used DISTINCT to ensure that only unique combinations of the 'staffs' table are returned. Using a LEFT JOIN to combine the 'staffs' table with the 'orders' table. WHERE the discount is greater the 0.05 (5%).
 ```sql
 SELECT DISTINCT s.staff_id
 , s.first_name
@@ -30,7 +33,11 @@ ON o.order_id = oi.order_id
 WHERE discount > 0.05;
 ```
 
-### Question 4: How many products from each product category need to be reordered (stock < 3)? Please provide the category name, number of total products in that category, and number of products that need to be reordered.
+## Question 4: How many products from each product category need to be reordered (stock < 3)? Please provide the category name, number of total products in that category, and number of products that need to be reordered.
+### In this example I use a Common Table Expression (CTE) to perform analysis on product categories and their stock quantities. The CTE was chosen to organize the SQL query into more manageable parts.
+### 'CTE_TOTAL_PRODUCTS' calculates the total number of products within each category using a LEFT JOIN.
+### 'CTE_LOW_STOCK_PRODUCTS' identifies products in categories with low stock (less than 3 items) using an INNER JOIN and COUNT.
+### Final Query uses the two previous CTE's to perform final analysis. This query is joined by 'category_name'. It COUNTs the number of product with low stock within each category and uses GROUP BY to group them by category_name.
 ```sql
 WITH CTE_TOTAL_PRODUCTS AS (
     SELECT c.category_name
@@ -55,7 +62,8 @@ LEFT JOIN CTE_LOW_STOCK_PRODUCTS ON CTE_TOTAL_PRODUCTS.category_name = CTE_LOW_S
 GROUP BY CTE_TOTAL_PRODUCTS.category_name, CTE_TOTAL_PRODUCTS.total_products;
 ```
 
-### Question 5: Rank each of the customers by number of orders. Make sure to list the customer name. 
+## Question 5: Rank each of the customers by number of orders. Make sure to list the customer name. 
+### Using the COUNT function to count orders for each customer including those who don't have orders. GROUP BY groups the results to ensure that the count of orders is aggregated per customer. ORDER BY (DESC) lists the results in descending order, meaning the customer with the highest number of orders will appear first.
 ```sql
 SELECT COUNT (o.order_id) AS order_count
 , c.first_name
@@ -69,7 +77,8 @@ GROUP BY c.customer_id
 ORDER BY order_count DESC;
 ```
 
-### Question 6: List all customers who ordered from multiple stores.
+## Question 6: List all customers who ordered from multiple stores.
+### Using COUNT and DISTINCT to calculate the number of different stores a customer has ordered from. I used a FULL OUTER JOIN to combine data from both tables ensuring that all customers and their orders are included in the results. Additionally, I used GROUP BY to aggregate the counts for each customer and HAVING to only include customer who have placed orders from more than one DISTINCT store.
 ```sql 
 SELECT c.customer_id
     , COUNT(DISTINCT o.store_id) AS num_distinct_stores_ordered_from
@@ -80,7 +89,7 @@ GROUP BY c.customer_id
 HAVING COUNT(DISTINCT o.store_id) > 1;
 ```
 
-### Question 7: Name all stores (with store name, city, and state), how many unique customers have ordered from each (including zeros), and total number of orders. 
+## Question 7: Name all stores (with store name, city, and state), how many unique customers have ordered from each (including zeros), and total number of orders. 
 ```sql
 SELECT COUNT(o.order_id) AS orders_per_store
 , COUNT(DISTINCT o.customer_id) AS unique_customers
@@ -94,7 +103,7 @@ GROUP BY s.store_name
 , s.city
 , s.state;
 ```
-### Question 8: For customers with more than 1 order, calculate the minimum, maximum, and average number of dates between orders.
+## Question 8: For customers with more than 1 order, calculate the minimum, maximum, and average number of dates between orders.
 ```sql
 WITH multiorder_customer AS (
 SELECT o.customer_id
@@ -133,7 +142,7 @@ FROM days_between_orders
 GROUP BY customer_id;
 ```
 
-### Question 9: Delete the table CTA.dbo.customers
+## Question 9: Delete the table CTA.dbo.customers
 ```sql
 SELECT name
 FROM sys.foreign_keys
