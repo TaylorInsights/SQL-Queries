@@ -1,18 +1,18 @@
--- Question 1
+-- Question 1: How many orders were shipped after the due (required) date?
 SELECT COUNT(order_id) AS Shipped_After_Due
 FROM orders
 WHERE shipped_date > required_date;
 
--- Question 2
+-- Question 2: Name all customers who live in New York and provided a phone number.
 SELECT first_name
 , last_name
 , state
-, phone
+, phone 
 FROM customers
 WHERE state = 'NY'
 AND phone IS NOT NULL;
 
--- Question 3
+-- Question 3: List all staff member names (no duplicates) who had a discount greater than 5% (0.05)
 SELECT DISTINCT s.staff_id
 , s.first_name
 , s.last_name
@@ -23,7 +23,7 @@ LEFT JOIN order_items AS oi
 ON o.order_id = oi.order_id
 WHERE discount > 0.05;
 
--- Question 4
+-- Question 4: How many products from each product category need to be reordered (stock < 3)? Please provide the category name, number of total products in that category, and number of products that need to be reordered.
 WITH CTE_TOTAL_PRODUCTS AS (
     SELECT c.category_name
     , COUNT(p.product_id) AS total_products
@@ -46,7 +46,7 @@ FROM CTE_TOTAL_PRODUCTS
 LEFT JOIN CTE_LOW_STOCK_PRODUCTS ON CTE_TOTAL_PRODUCTS.category_name = CTE_LOW_STOCK_PRODUCTS.category_name
 GROUP BY CTE_TOTAL_PRODUCTS.category_name, CTE_TOTAL_PRODUCTS.total_products;
 
--- Question 5
+-- Question 5: Rank each of the customers by number of orders. Make sure to list the customer name. 
 SELECT COUNT (o.order_id) AS order_count
 , c.first_name
 , c.last_name
@@ -58,7 +58,7 @@ GROUP BY c.customer_id
 , c.last_name
 ORDER BY order_count DESC;
 
--- Question 6
+-- Question 6: List all customers who ordered from multiple stores.
 SELECT c.customer_id
     , COUNT(DISTINCT o.store_id) AS num_distinct_stores_ordered_from
 FROM orders AS o
@@ -67,7 +67,7 @@ FULL OUTER JOIN customers AS c
 GROUP BY c.customer_id
 HAVING COUNT(DISTINCT o.store_id) > 1;
 
--- Question 7
+-- Question 7: Name all stores (with store name, city, and state), how many unique customers have ordered from each (including zeros), and total number of orders. 
 SELECT COUNT(o.order_id) AS orders_per_store
 , COUNT(DISTINCT o.customer_id) AS unique_customers
 , s.store_name
@@ -80,7 +80,7 @@ GROUP BY s.store_name
 , s.city
 , s.state;
 
--- Question 8
+-- Question 8: For customers with more than 1 order, calculate the minimum, maximum, and average number of dates between orders.
 WITH multiorder_customer AS (
 SELECT o.customer_id
 , COUNT(DISTINCT o.order_id) AS multiple_orders
@@ -117,7 +117,7 @@ SELECT customer_id
 FROM days_between_orders
 GROUP BY customer_id;
 
--- Question 9
+-- Question 9: Delete the table CTA.dbo.customers
 SELECT name
 FROM sys.foreign_keys
 WHERE parent_object_id = OBJECT_ID('orders') AND OBJECT_NAME(referenced_object_id) = 'customers';
