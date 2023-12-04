@@ -20,7 +20,7 @@ AND phone IS NOT NULL;
 ```
 
 ## Question 3: List all staff member names (no duplicates) who had a discount greater than 5% (0.05)
-### I used DISTINCT to ensure that only unique combinations of the 'staffs' table are returned. Using a LEFT JOIN to combine the 'staffs' table with the 'orders' table. WHERE the discount is greater the 0.05 (5%).
+### I used DISTINCT to ensure that only unique combinations of the 'staffs' table are returned. Using a LEFT JOIN to combine the 'staffs' table with the 'orders' table. WHERE the discount is greater than 0.05 (5%).
 ```sql
 SELECT DISTINCT s.staff_id
 , s.first_name
