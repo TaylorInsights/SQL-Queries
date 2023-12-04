@@ -90,6 +90,7 @@ HAVING COUNT(DISTINCT o.store_id) > 1;
 ```
 
 ## Question 7: Name all stores (with store name, city, and state), how many unique customers have ordered from each (including zeros), and total number of orders. 
+### This query COUNTs the number of orders made and COUNT of DISTINCT customers for each store. It lists the store's name, city and state then uses a LEFT JOIN based on the store ID. Lastly, it uses GROUP BY to combine the results by store's name, city and state.
 ```sql
 SELECT COUNT(o.order_id) AS orders_per_store
 , COUNT(DISTINCT o.customer_id) AS unique_customers
@@ -104,6 +105,7 @@ GROUP BY s.store_name
 , s.state;
 ```
 ## Question 8: For customers with more than 1 order, calculate the minimum, maximum, and average number of dates between orders.
+### In this example, 
 ```sql
 WITH multiorder_customer AS (
 SELECT o.customer_id
@@ -143,6 +145,7 @@ GROUP BY customer_id;
 ```
 
 ## Question 9: Delete the table CTA.dbo.customers
+### In this example I received an error that there was a foreign key constraint and I was not able to delete the table. In order to bypass this issue, I searched for the foreign key in the 'orders' table that linked the 'customers' table. Next, I used ALTER TABLE to remove the foreign key constraint (DROP CONSTRAINT). After, I was able to delete the 'customers' table (DROP TABLE).
 ```sql
 SELECT name
 FROM sys.foreign_keys
