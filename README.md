@@ -105,7 +105,11 @@ GROUP BY s.store_name
 , s.state;
 ```
 ## Question 8: For customers with more than 1 order, calculate the minimum, maximum, and average number of dates between orders.
-### In this example, 
+### In this example, the queries are used to analyze the time gaps between orders for customers who have placed multiple orders. In order to achieve this I used CTE's.
+### multiorder_customer CTE: This part finds customers who have placed more than one order and counts the number of distinct orders for each customer.
+### order_dates CTE: This part retrieves the order dates for customers and filters them to only include those who have made multiple orders.
+### days_between_orders CTE: This determines the time gaps between consecutive orders for each customer using the LAG function to get the previous order date by partioning (PARTITION BY) the data. It then calculates the number of days between orders using DATEDIFF and handles cases where there's no previous order date by using COALESCE to avoid NULL values.
+### final query: Selects and summarizes the results using MIN, MAX and AVG.
 ```sql
 WITH multiorder_customer AS (
 SELECT o.customer_id
